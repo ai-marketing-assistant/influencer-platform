@@ -4,74 +4,86 @@ import streamlit as st
 if "page" not in st.session_state:
   st.session_state.page = "home"
 
-# --- მთავარი გვერდი ანიმაციით ---
+# --- მთავარი გვერდი (ანიმაციური შესავალი) ---
 if st.session_state.page == "home":
   st.markdown(
       """
         <style>
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* სმაილების და ზედმეტი ელემენტების დამალვა, სუფთა დიზაინი */
+        .stButton button {
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            padding: 10px 24px;
+            transition: all 0.3s ease;
+        }
+        .stButton button:hover {
+            background-color: #2563eb;
+            transform: scale(1.05);
         }
 
-        .fade-title {
-            animation: fadeIn 1.2s ease forwards;
-            font-size: 3rem;
-            font-weight: bold;
+        /* ანიმაცია: ჯერ სახელი შემოდის */
+        @keyframes fadeInTitle {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ანიმაცია: მერე ღილაკი (გვიან იწყება) */
+        @keyframes fadeInButton {
+            0% { opacity: 0; transform: translateY(20px); }
+            50% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .main-title {
+            animation: fadeInTitle 1.5s ease forwards;
+            font-size: 4rem;
+            font-weight: 800;
             text-align: center;
             color: #ffffff;
-            margin-top: 80px;
+            margin-top: 100px;
+            letter-spacing: 2px;
         }
 
-        .fade-subtitle {
-            animation: fadeIn 1.2s ease 0.4s forwards;
-            opacity: 0;
-            text-align: center;
-            color: #94a3b8;
-            font-size: 1.2rem;
-            margin-bottom: 40px;
+        .delayed-button-container {
+            animation: fadeInButton 2.2s ease forwards;
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
         }
         </style>
 
-        <div class="fade-title">ჩემი პლატფორმა</div>
-        <div class="fade-subtitle">მოგესალმებით, გთხოვთ აირჩიოთ მოქმედება</div>
+        <!-- მთავარი სახელი რომელიც პირველი ხვდებათ -->
+        <div class="main-title">collab.ge</div>
         """,
       unsafe_allow_html=True,
   )
 
-  # ღილაკები ცენტრში
-  col1, col2, col3 = st.columns([1, 1.5, 1])
+  # ღილაკი, რომელიც სახელის მერე გამოჩნდება
+  col1, col2, col3 = st.columns([1, 1, 1])
   with col2:
-    # რეგისტრაციის ღილაკი
-    if st.button("რეგისტრაცია", use_container_width=True):
+    st.markdown('<div class="delayed-button-container">', unsafe_allow_html=True)
+    if st.button("დაწყება", use_container_width=True):
       st.session_state.page = "register"
       st.rerun()
-
-    # შესვლის ღილაკი (თუ დაგჭირდეს)
-    if st.button("შესვლა", use_container_width=True):
-      st.session_state.page = "login"
-      st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # --- რეგისტრაციის გვერდი ---
 elif st.session_state.page == "register":
-  st.title("რეგისტრაციის გვერდი")
-  st.write("აქ იქნება რეგისტრაციის ფორმა (მონაცემების შეყვანა).")
+  st.title("რეგისტრაცია")
+  st.write("მოგესალმებით collab.ge-ს რეგისტრაციის გვერდზე!")
 
-  if st.button("← უკან დაბრუნება"):
-    st.session_state.page = "home"
-    st.rerun()
+  # რეგისტრაციის ველები (მაგალითისთვის)
+  username = st.text_input("სახელი / მომხმარებელი")
+  email = st.text_input("ელ-ფოსტა")
+  password = st.text_input("პაროლი", type="password")
 
-# --- შესვლის გვერდი ---
-elif st.session_state.page == "login":
-  st.title("შესვლის გვერდი")
-  st.write("აქ იქნება ავტორიზაციის ფორმა.")
+  if st.button("რეგისტრაციის დასრულება"):
+    st.success("წარმატებით დარეგისტრირდით!")
 
+  st.write("")
   if st.button("← უკან დაბრუნება"):
     st.session_state.page = "home"
     st.rerun()
