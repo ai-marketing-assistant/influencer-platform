@@ -11,7 +11,7 @@ if "role" not in st.session_state:
 if "username" not in st.session_state:
   st.session_state.username = ""
 
-# ბაზები (მეხსიერებაში შესანახად აპლიკაციის ფარგლებში)
+# ბაზები
 if "influencers" not in st.session_state:
   st.session_state.influencers = [
       {
@@ -47,27 +47,26 @@ if "offers" not in st.session_state:
   ]
 
 
-# --- ერთიანი დახვეწილი მწვანე/ბეჟი დიზაინი (CSS) ---
+# --- დიზაინი: მუქი მწვანე ფონი და ბეჟი/კრემისფერი წარწერები ---
 st.markdown(
     """
     <style>
     /* მთლიანი აპის მუქი მწვანე ფონი */
     .stApp {
         background-color: #2b382f;
-        color: #f5f2eb;
     }
 
-    /* სათაურები ბეჟი/ღია ფერში */
-    h1, h2, h3, h4 {
+    /* აბსოლუტურად ყველა წარწერა (სათაურები, პარაგრაფები, ლეიბლები) არის ბეჟი/კრემისფერი */
+    h1, h2, h3, h4, h5, h6, p, label, span, .stMarkdown, .stTextInput label, .stTextArea label {
         color: #f5f2eb !important;
         font-family: 'Helvetica Neue', sans-serif;
     }
 
-    /* ღილაკების დახვეწილი სტილი ჩარჩოებით */
+    /* ღილაკების სტილი ბეჟი ჩარჩოებით და წარწერებით */
     .stButton button {
         background-color: transparent !important;
         color: #f5f2eb !important;
-        border: 1px solid rgba(245, 242, 235, 0.4) !important;
+        border: 1px solid rgba(245, 242, 235, 0.5) !important;
         border-radius: 6px;
         font-weight: 500;
         letter-spacing: 1px;
@@ -78,9 +77,10 @@ st.markdown(
     .stButton button:hover {
         background-color: rgba(245, 242, 235, 0.15) !important;
         border-color: #f5f2eb !important;
+        color: #ffffff !important;
     }
 
-    /* ტექსტური ველების ჩარჩოები და დიზაინი */
+    /* ტექსტური ველები */
     .stTextInput input, .stTextArea textarea {
         background-color: #1e2721 !important;
         color: #f5f2eb !important;
@@ -91,7 +91,7 @@ st.markdown(
     /* ბარათების (Cards) ჩარჩოები */
     .card-box {
         background-color: #1e2721;
-        border: 1px solid rgba(245, 242, 235, 0.2);
+        border: 1px solid rgba(245, 242, 235, 0.25);
         padding: 20px;
         border-radius: 8px;
         margin-bottom: 15px;
@@ -159,7 +159,7 @@ if st.session_state.page == "home":
 
 
 # ==========================================
-# 2. როლის არჩევა (რეგისტრაცია / შესვლა)
+# 2. როლის არჩევა
 # ==========================================
 elif st.session_state.page == "role_select":
   st.title("აირჩიეთ თქვენი როლი")
@@ -184,7 +184,7 @@ elif st.session_state.page == "role_select":
 
 
 # ==========================================
-# 3. რეგისტრაციის ფორმა (როლის მიხედვით)
+# 3. რეგისტრაციის ფორმა
 # ==========================================
 elif st.session_state.page == "register":
   if st.session_state.role == "company":
@@ -208,7 +208,7 @@ elif st.session_state.page == "register":
     st.title("ინფლუენსერის რეგისტრაცია")
     inf_name = st.text_input("სახელი / გვარი ან არხის სახელი")
     followers = st.text_input("ფოლოვერების რაოდენობა (მაგ: 50K)")
-    content_type = st.text_input("ძირითადი კონტენტი (მაგ: ლაიფსტაილი, თეიქი)")
+    content_type = st.text_input("ძირითადი კონტენტი (მაგ: ლაიფსტაილი)")
     ig_link = st.text_input("Instagram-ის ლინკი")
     tt_link = st.text_input("TikTok-ის ლინკი")
 
@@ -238,7 +238,7 @@ elif st.session_state.page == "register":
 elif st.session_state.page == "dashboard":
   st.title(f"მოგესალმებით, {st.session_state.username}! 👋")
 
-  # --- თუ მომხმარებელი არის ინფლუენსერი ---
+  # --- ინფლუენსერის ხედი ---
   if st.session_state.role == "influencer":
     st.write(
         "### აქტიური შეთავაზებები კომპანიებისგან (შეგიძლიათ გააგზავნოთ"
@@ -263,7 +263,7 @@ elif st.session_state.page == "dashboard":
             f"განაცხადი წარმატებით გაეგზავნა კომპანიას — {offer['company']}!"
         )
 
-  # --- თუ მომხმარებელი არის კომპანია ---
+  # --- კომპანიის ხედი ---
   else:
     tab1, tab2 = st.tabs(
         ["📋 ყველა შეთავაზება", "✨ რეგისტრირებული ინფლუენსერები"]
@@ -309,8 +309,8 @@ elif st.session_state.page == "dashboard":
                     <p><b>ფოლოვერები:</b> 👥 {inf['followers']}</p>
                     <p><b>კონტენტი:</b> 🎬 {inf['content']}</p>
                     <p><b>სოც-ლინკები:</b> 
-                       <a href="https://{inf['ig']}" target="_blank" style="color: #d1c7bd; margin-right: 15px;">Instagram</a> 
-                       <a href="https://{inf['tt']}" target="_blank" style="color: #d1c7bd;">TikTok</a>
+                       <a href="https://{inf['ig']}" target="_blank" style="color: #f5f2eb; margin-right: 15px; text-decoration: underline;">Instagram</a> 
+                       <a href="https://{inf['tt']}" target="_blank" style="color: #f5f2eb; text-decoration: underline;">TikTok</a>
                     </p>
                 </div>
                 """,
