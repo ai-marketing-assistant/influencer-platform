@@ -2,11 +2,11 @@ import streamlit as st
 
 st.set_page_config(page_title="Collab.ge — კრეატორებისა და ბრენდების პლატფორმა", layout="wide")
 
-# სესხის მართვა რეგისტრაციისთვის და მონაცემებისთვის
-if "registered" not in st.session_state:
-    st.session_state.registered = False
+# სესხის მართვა ეტაპების გასავლელად
+if "step" not in st.session_state:
+    st.session_state.step = "welcome"  # ეტაპები: "welcome", "choose_role", "register", "main"
 if "user_type" not in st.session_state:
-    st.session_state.user_type = None  # "brand" ან "creator"
+    st.session_state.user_type = None
 if "user_name" not in st.session_state:
     st.session_state.user_name = ""
 if "campaigns" not in st.session_state:
@@ -14,7 +14,7 @@ if "campaigns" not in st.session_state:
 if "creators" not in st.session_state:
     st.session_state.creators = []
 
-# პრემიუმ, სადა და დახვეწილი დიზაინი (ემოჯების გარეშე)
+# პრემიუმ, სადა და დახვეწილი დიზაინი (ემოჯების გარეშე, მდიდრული ვიბით)
 st.markdown("""
     <style>
     .stApp {
@@ -27,13 +27,13 @@ st.markdown("""
         background-color: #3b4231;
         color: #f7f5f0;
         border-radius: 6px;
-        padding: 12px 24px;
+        padding: 12px 28px;
         border: none;
         font-weight: 500;
-        letter-spacing: 1px;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
         font-size: 12px;
-        box-shadow: 0 4px 15px rgba(59, 66, 49, 0.08);
+        box-shadow: 0 4px 20px rgba(59, 66, 49, 0.08);
     }
     .stButton>button:hover {
         background-color: #2c3224;
@@ -41,7 +41,7 @@ st.markdown("""
     }
     .card {
         background-color: #ffffff;
-        padding: 28px;
+        padding: 32px;
         border-radius: 12px;
         box-shadow: 0 4px 25px rgba(59, 66, 49, 0.04);
         margin-bottom: 24px;
@@ -51,10 +51,21 @@ st.markdown("""
         color: #3b4231 !important;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-    .title-text {
+    .hero-title {
         font-family: serif;
-        letter-spacing: 4px;
+        letter-spacing: 6px;
         font-weight: 400;
+        font-size: 48px;
+        text-align: center;
+        margin-top: 80px;
+        margin-bottom: 16px;
+    }
+    .hero-subtitle {
+        text-align: center;
+        font-size: 16px;
+        color: #6b7262 !important;
+        margin-bottom: 40px;
+        letter-spacing: 0.5px;
     }
     .subtext {
         color: #6b7262 !important;
@@ -64,63 +75,82 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 1. მთავარი შესასვლელი (თუ მომხმარებელი არ არის დარეგისტრირებული)
-if not st.session_state.registered:
-    st.markdown("<h1 class='title-text' style='text-align: center; font-size: 40px; margin-top: 30px; margin-bottom: 12px;'>C O L L A B . G E</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; font-size: 15px; color: #6b7262; margin-bottom: 50px; letter-spacing: 0.5px;'>პლატფორმა, რომელიც აკავშირებს წამყვან ბრენდებსა და კრეატორებს შიდა მარკეტინგული კამპანიებისთვის.</p>", unsafe_allow_html=True)
+# ----------------ტოტალური ეტაპები----------------
 
+# ეტაპი 1: მისასალმებელი დიდი სათაური და დაწყების ღილაკი
+if st.session_state.step == "welcome":
+    st.markdown("<h1 class='hero-title'>C O L L A B . G E</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='hero-subtitle'>პლატფორმა, რომელიც აკავშირებს წამყვან ბრენდებსა და კრეატორებს შიდა მარკეტინგული კამპანიებისთვის.</p>", unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([2, 1, 2])
+    with col2:
+        if st.button("დაწყება"):
+            st.session_state.step = "choose_role"
+            st.rerun()
+
+# ეტაპი 2: როლის არჩევა (ბრენდი / კრეატორი)
+elif st.session_state.step == "choose_role":
+    st.markdown("<h1 class='hero-title' style='font-size: 36px; margin-top: 40px;'>აირჩიეთ თქვენი სტატუსი</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='hero-subtitle'>ვისი სახით უერთდებით პლატფორმას?</p>", unsafe_allow_html=True)
+    
     col1, col2 = st.columns(2, gap="large")
-
+    
     with col1:
         st.markdown("""
-        <div class="card">
-            <h3 style="font-family: serif; font-size: 20px; font-weight: 500; margin-top:0;">ბრენდებისთვის</h3>
-            <p class="subtext" style="margin-top: 15px;">განათავსეთ კამპანიები, მართეთ შეთავაზებები და პირდაპირ დაუკავშირდით კრეატორებს.</p>
+        <div class="card" style="text-align: center; padding: 40px;">
+            <h3 style="font-family: serif; font-size: 22px; font-weight: 500; margin-bottom: 15px;">ბრენდი</h3>
+            <p class="subtext">მსურს კამპანიების დამატება და კრეატორების მოძიება.</p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("რეგისტრაცია ბრენდისთვის", key="reg_brand_btn"):
-            st.session_state.reg_mode = "brand"
-            st.rerun()
+        col_a, col_b, col_c = st.columns([1, 2, 1])
+        with col_b:
+            if st.button("ბრენდის რეგისტრაცია", key="ch_brand"):
+                st.session_state.user_type = "brand"
+                st.session_state.step = "register"
+                st.rerun()
 
     with col2:
         st.markdown("""
-        <div class="card">
-            <h3 style="font-family: serif; font-size: 20px; font-weight: 500; margin-top:0;">კრეატორებისთვის</h3>
-            <p class="subtext" style="margin-top: 15px;">შექმენით პროფილი, დაათვალიერეთ აქტიური კამპანიები და მიიღეთ შეთავაზებები.</p>
+        <div class="card" style="text-align: center; padding: 40px;">
+            <h3 style="font-family: serif; font-size: 22px; font-weight: 500; margin-bottom: 15px;">კრეატორი</h3>
+            <p class="subtext">მსურს კამპანიებში მონაწილეობა და ბრენდებთან თანამშრომლობა.</p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("რეგისტრაცია კრეატორისთვის", key="reg_creator_btn"):
-            st.session_state.reg_mode = "creator"
-            st.rerun()
+        col_a, col_b, col_c = st.columns([1, 2, 1])
+        with col_b:
+            if st.button("კრეატორის რეგისტრაცია", key="ch_creator"):
+                st.session_state.user_type = "creator"
+                st.session_state.step = "register"
+                st.rerun()
 
-    # რეგისტრაციის ფორმის გამოჩენა არჩევნის მიხედვით
-    if "reg_mode" in st.session_state:
-        st.markdown("<hr style='border: 1px solid #e8e4dc; margin: 40px 0;'>", unsafe_allow_html=True)
-        
-        if st.session_state.reg_mode == "brand":
-            st.subheader("ბრენდის რეგისტრაცია")
+# ეტაპი 3: რეგისტრაციის ფორმა არჩეული როლის მიხედვით
+elif st.session_state.step == "register":
+    st.markdown(f"<h1 class='hero-title' style='font-size: 32px; margin-top: 30px;'>{'ბრენდის' if st.session_state.user_type == 'brand' else 'კრეატორის'} რეგისტრაცია</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='hero-subtitle'>გთხოვთ შეავსოთ საჭირო ინფორმაცია პლატფორმაზე შესასვლელად.</p>", unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.session_state.user_type == "brand":
             b_name = st.text_input("ბრენდის ოფიციალური დასახელება")
             b_contact = st.text_input("საკონტაქტო პირი / ელ-ფოსტა / ტელეფონი")
             
+            st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
             if st.button("რეგისტრაციის დასრულება"):
                 if b_name and b_contact:
-                    st.session_state.registered = True
-                    st.session_state.user_type = "brand"
                     st.session_state.user_name = b_name
+                    st.session_state.step = "main"
                     st.rerun()
                 else:
                     st.warning("გთხოვთ შეავსოთ სავალდებულო ველები.")
 
-        elif st.session_state.reg_mode == "creator":
-            st.subheader("კრეატორის რეგისტრაცია")
+        else:
             c_name = st.text_input("სახელი და გვარი")
             c_link = st.text_input("სოციალური ქსელის ბმული (Instagram / TikTok)")
             c_followers = st.number_input("გამომწერების რაოდენობა", min_value=500, step=500)
             
+            st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
             if st.button("რეგისტრაციის დასრულება"):
                 if c_name and c_link:
-                    st.session_state.registered = True
-                    st.session_state.user_type = "creator"
                     st.session_state.user_name = c_name
                     # ავტომატურად ვამატებთ კრეატორთა ბაზაში
                     st.session_state.creators.append({
@@ -128,35 +158,32 @@ if not st.session_state.registered:
                         "link": c_link,
                         "followers": c_followers
                     })
+                    st.session_state.step = "main"
                     st.rerun()
                 else:
                     st.warning("გთხოვთ შეავსოთ სავალდებულო ველები.")
 
-# 2. მთავარი აპლიკაცია (თუ მომხმარებელი წარმატებით დარეგისტრირდა)
-else:
+# ეტაპი 4: მთავარი პლატფორმა (მუშა სივრცე)
+elif st.session_state.step == "main":
     top_col1, top_col2 = st.columns([4, 1])
     with top_col1:
         st.markdown(f"<h2 style='font-family: serif; font-size: 24px; margin:0;'>C O L L A B . G E</h2>", unsafe_allow_html=True)
         st.markdown(f"<p class='subtext' style='margin-top: 5px;'>მოგესალმებით, <b>{st.session_state.user_name}</b> ({'ბრენდი' if st.session_state.user_type == 'brand' else 'კრეატორი'})</p>", unsafe_allow_html=True)
     with top_col2:
         if st.button("გასვლა"):
-            st.session_state.registered = False
+            st.session_state.step = "welcome"
             st.session_state.user_type = None
             st.session_state.user_name = ""
-            if "reg_mode" in st.session_state:
-                del st.session_state.reg_mode
             st.rerun()
 
     st.markdown("<hr style='border: 1px solid #e8e4dc; margin: 25px 0;'>", unsafe_allow_html=True)
 
-    # ორმხრივი სამუშაო სივრცე
     tab1, tab2 = st.tabs(["აქტიური კამპანიები", "რეგისტრირებული კრეატორები"])
 
     with tab1:
         st.subheader("მიმდინარე კამპანიები")
         st.markdown("<p class='subtext' style='margin-bottom: 25px;'>ბრენდების მიერ დამატებული შეთავაზებები.</p>", unsafe_allow_html=True)
 
-        # თუ ბრენდია, მისთვის ვხსნით კამპანიის დამატების ფორმას
         if st.session_state.user_type == "brand":
             with st.expander("ახალი კამპანიის დამატება"):
                 offer = st.text_area("შეთავაზების დეტალები (ბარტერი / ანაზღაურება)")
@@ -211,5 +238,4 @@ else:
                 
                 if st.session_state.user_type == "brand":
                     if st.button(f"თანამშრომლობის შეთავაზება — {cr['name']}", key=f"collab_{cr['name']}"):
-                    # დასრულებულია შეტყობინების იმიტაცია
                         st.success(f"შეტყობინება წარმატებით გაიგზავნა კრეატორთან ({cr['name']}).")
