@@ -46,9 +46,6 @@ if "offers" not in st.session_state:
       },
   ]
 
-if "applications" not in st.session_state:
-  st.session_state.applications = []
-
 
 # --- ერთიანი დახვეწილი მწვანე/ბეჟი დიზაინი (CSS) ---
 st.markdown(
@@ -199,7 +196,6 @@ elif st.session_state.page == "register":
     if st.button("რეგისტრაცია და შესვლა"):
       if comp_name and offer_title:
         st.session_state.username = comp_name
-        # ვამატებთ შეთავაზებას ბაზაში
         st.session_state.offers.append(
             {"company": comp_name, "title": offer_title, "desc": offer_desc}
         )
@@ -219,7 +215,6 @@ elif st.session_state.page == "register":
     if st.button("რეგისტრაცია და შესვლა"):
       if inf_name:
         st.session_state.username = inf_name
-        # ვამატებთ ინფლუენსერს ბაზაში
         st.session_state.influencers.append({
             "name": inf_name,
             "followers": followers,
@@ -288,9 +283,6 @@ elif st.session_state.page == "dashboard":
             unsafe_allow_html=True,
         )
 
-      # კომპანიას შეუძლია ახალი შეთავაზების დამატებაც
-      with st.exp="expand":
-        pass
       st.write("---")
       st.write("### დაამატე ახალი შეთავაზება:")
       new_title = st.text_input("შეთავაზების სათაური")
