@@ -9,17 +9,22 @@ if st.session_state.page == "home":
   st.markdown(
       """
         <style>
+        /* Streamlit-ის ძირითადი ფონის მუქ ფერზე შეცვლა */
+        .stApp {
+            background-color: #0f172a;
+        }
+
         /* ეკრანის ცენტრში მოქცევა */
         .welcome-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 65vh;
+            height: 55vh;
             text-align: center;
         }
 
-        /* სახელი collab.ge - თავიდან უფერული (opacity: 0) და ოდნავ ქვემოთ, მერე ნელა შემოდის */
+        /* სახელი collab.ge - მწვანე ფერში, თავიდან უფერული და მერე ნელა შემოდის */
         @keyframes fadeInTitle {
             0% {
                 opacity: 0;
@@ -31,56 +36,44 @@ if st.session_state.page == "home":
             }
         }
 
-        /* ღილაკის ანიმაცია - ჩნდება სახელის შემოსვლის შემდეგ */
-        @keyframes fadeInButton {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            70% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         .app-title {
             animation: fadeInTitle 1.8s ease forwards;
             font-size: 5rem;
             font-weight: 900;
-            color: #ffffff;
+            color: #10b981 !important; /* ლამაზი ზურმუხტისფერი მწვანე */
             letter-spacing: 3px;
-            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.3); /* მწვანე ბზინვარება */
         }
 
-        .btn-box {
-            animation: fadeInButton 2.4s ease forwards;
-            opacity: 0;
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
+        /* ღილაკის დიზაინი */
+        .stButton button {
+            background-color: #10b981 !important;
+            color: white !important;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            padding: 12px 24px;
+            transition: all 0.3s ease;
+        }
+        .stButton button:hover {
+            background-color: #059669 !important;
+            transform: scale(1.05);
         }
         </style>
 
         <div class="welcome-container">
-            <!-- აპლიკაციის დიდი სახელი, რომელიც ნელ-ნელა ხილული ხდება -->
             <div class="app-title">collab.ge</div>
         </div>
         """,
       unsafe_allow_html=True,
   )
 
-  # ღილაკი, რომელიც სახელის გამოჩენის მერე მოდის
+  # ღილაკი ცენტრში
   col1, col2, col3 = st.columns([1, 1, 1])
   with col2:
-    st.markdown('<div class="btn-box">', unsafe_allow_html=True)
     if st.button("დაწყება", use_container_width=True):
       st.session_state.page = "register"
       st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
 
 # --- რეგისტრაციის გვერდი ---
 elif st.session_state.page == "register":
